@@ -10,6 +10,31 @@
   </script>
 </head>
 <body>
+
+    <script type="text/babel">
+      const handleResponse = (xhr) => {
+  
+      };
+      
+      const sendAjax = (url) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.setRequestHeader ("Accept", 'application/json');
+  
+        xhr.onload = () => handleResponse(xhr);
+        
+        xhr.send();
+      };
+  
+      const init = () => {
+        const Button = document.querySelector("#send");
+        
+      };
+  
+      window.onload = init;
+  
+    </script>
+
   <section id="top">
     <h3>Status Code Tests</h3>
     <select id="page">
