@@ -1,16 +1,38 @@
 const http = require('http');
+const url = require('url');
+const query = require('querystring');
 const htmlHandler = require('./htmlResponses.js');
-const jsonHandler = require('./jsonResponses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 const urlStruct = {
   '/': htmlHandler.getIndex,
-  '/success': jsonHandler.success,
-  '/badRequest': jsonHandler.badRequest,
-  notFound: jsonHandler.notFound,
+  '/style.css': htmlHandler.getCss,
+  '/success': htmlHandler.success,
+  '/badRequest': htmlHandler.badRequest,
+  '/unauthorized': htmlHandler.unauthorized,
+  '/forbidden': htmlHandler.forbidden,
+  '/internal': htmlHandler.internal,
+  '/notImplemented': htmlHandler.notImplemented,
+  notFound: htmlHandler.notFound,
 };
 
+const onRequest = (request, response) => {
+  console.log(request.url);
+
+  const parsedUrl = url.parse(request.url);
+  const paramaters = query.parse(parsedUrl.query);
+  const acceptTypes = request.headers.accept.split(',');
+
+  if (urlStruct[parsedUrl.pathname]) {
+    urlStruct[parsedUrl.pathname](request, response, paramaters, acceptTypes);
+  } else {
+    urlStruct.notFound(request, response, paramaters, acceptTypes);
+  }
+};
+
+
+/*
 const onRequest = (request, response) => {
   //const parsedUrl = url.parse(request.url);
   switch (request.url) {
@@ -38,7 +60,7 @@ const onRequest = (request, response) => {
       htmlHandler.getIndex(request, response);
       break;
   }
-};
+}; */
 
 http.createServer(onRequest).listen(port);
 console.log(`listening on 127.0.0.1: ${port}`);
